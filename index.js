@@ -1,17 +1,17 @@
 const olx="https://www.olx.ua/d/uk/elektronika/telefony-i-aksesuary/mobilnye-telefony-smartfony/q-iphone/?currency=UAH&search%5Border%5D=created_at%3Adesc&search%5Bfilter_enum_mobile_phone_manufacturer%5D%5B0%5D=2065&page="
 const cheerio = require('cheerio');
+const express = require("express");
 const olxObyav='https://www.olx.ua'
 const superagent = require('superagent');
 const fs = require("fs");
+const jso=[]
 const { Telegraf } = require('telegraf')
 const schedule = require('node-schedule');
-const jsorf=[]
-const bot = new Telegraf('5420616125:AAF3r-6-VD6SlgXb8elWuU6rUG4zfC_YKcs')
-bot.telegram.sendMessage('-638936866', '123');
 async function all() {
     async function test() {
         const massive=[]
-        const jso = await JSON.parse(fs.readFileSync('save.json', 'utf-8')).concat(jsorf)
+        // const jso = await JSON.parse(fs.readFileSync('save.json', 'utf-8'))
+        const bot = new Telegraf('5420616125:AAF3r-6-VD6SlgXb8elWuU6rUG4zfC_YKcs')
         for (let k = 1; k <= 1; k++) {
             const site = await superagent.get(`${olx}${k}`)
             const html = await cheerio.load(site.text)
@@ -44,12 +44,6 @@ async function all() {
                                 price: priceOb,
                                 link: `${olxObyav}${mass[i]}`
                             })
-                            jsorf.push({
-                                name: nameOb,
-                                date: dateOb,
-                                price: priceOb,
-                                link: `${olxObyav}${mass[i]}`
-                            })
                             jso.push({
                                 name: nameOb,
                                 date: dateOb,
@@ -63,14 +57,15 @@ async function all() {
         }
         if (massive.length > 0) {
             await bot.telegram.sendMessage('-638936866', massive);
-            await fs.writeFileSync('save.json', JSON.stringify(jso))
         }
     }
 
     test()
 }
-
-const job = schedule.scheduleJob('*/5 * * * *', async function(){
-    await all()
-    console.log('success');
+// all()
+app.listen(3000,()=>{
+    schedule.scheduleJob('*/5 * * * *', async function(){
+        await all()
+        console.log('success');
+    });
 });
