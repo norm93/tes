@@ -7,6 +7,7 @@ const fs = require("fs");
 const jso=[]
 const { Telegraf } = require('telegraf')
 const schedule = require('node-schedule');
+const app = express();
 async function all() {
     async function test() {
         const massive=[]
